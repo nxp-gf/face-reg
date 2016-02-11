@@ -58,8 +58,7 @@ def recog_process_frame(frame):
     recog_data = findPeople(features_arr,positions);
     for (i,rect) in enumerate(rects):
         cv2.rectangle(frame,(rect[0],rect[1]),(rect[0] + rect[2],rect[1]+rect[3]),(255,0,0)) #draw bounding box for the face
-        cv2.putText(frame,recog_data[i][0]+"-"+str(recog_data[i][1])+"%",(rect[0],rect[1]),cv2.FONT_HERSHEY_SIMPLEX,1,(255,255,255),1)
-        #cv2.putText(frame,recog_data[i][0]+" - "+str(recog_data[i][1])+"%",(rect[0],rect[1]),cv2.FONT_HERSHEY_SIMPLEX,1,(255,255,255),1,cv2.CV_AA)
+        cv2.putText(frame, recog_data,(rect[0],rect[1]),cv2.FONT_HERSHEY_SIMPLEX,1,(255,255,255),1)
     return frame
 
 '''
@@ -74,16 +73,16 @@ facerec_128D.txt Data Structure:
 This function basically does a simple linear search for 
 ^the 128D vector with the min distance to the 128D vector of the face on screen
 '''
-def findPeople(features_arr, positions, thres = 0.6, percent_thres = 70):
+def findPeople(features_arr, positions, thres = 0.6, percent_thres = 80):
     '''
     :param features_arr: a list of 128d Features of all faces on screen
     :param positions: a list of face position types of all faces on screen
     :param thres: distance threshold
     :return: person name and percentage
     '''
-    returnRes = [];
+    returnRes = "";
     for (i,features_128D) in enumerate(features_arr):
-        result = "Unknown";
+        returnRes = "Unknown";
         smallest = sys.maxsize
         for person in feature_data_set.keys():
             person_data = feature_data_set[person][positions[i]];
@@ -91,11 +90,12 @@ def findPeople(features_arr, positions, thres = 0.6, percent_thres = 70):
                 distance = np.sqrt(np.sum(np.square(data-features_128D)))
                 if(distance < smallest):
                     smallest = distance;
-                    result = person;
+                    returnRes = person;
         percentage =  min(100, 100 * thres / smallest)
         if percentage <= percent_thres :
-            result = "Unknown"
-        returnRes.append((result,round(percentage,1)))
+            returnRes = "Unknown"
+        else:
+            returnRes = returnRes+"-"+str(round(percentage,1))+"%"
     return returnRes
 
 '''

@@ -40,16 +40,6 @@ import StringIO
 import urllib
 import base64
 
-#from sklearn.decomposition import PCA
-#from sklearn.grid_search import GridSearchCV
-#from sklearn.manifold import TSNE
-#from sklearn.svm import SVC
-
-#import matplotlib as mpl
-#mpl.use('Agg')
-#import matplotlib.pyplot as plt
-#import matplotlib.cm as cm
-
 import facerecogniton.face_reg as face_reg
 
 # For TLS connections
@@ -68,9 +58,10 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
         super(OpenFaceServerProtocol, self).__init__()
         self.training = False
         self.new_person = None
-        #face_reg.recog_engine_init(serverip='10.193.20.74')
+        face_reg.recog_engine_init(serverip='10.193.20.74')
         #face_reg.recog_engine_init(serverip='ec2-54-202-53-170.us-west-2.compute.amazonaws.com')
-        face_reg.recog_engine_init(serverip='47.95.202.40')
+        #face_reg.recog_engine_init()
+        #face_reg.recog_engine_init(serverip='47.95.202.40')
         self.peoples = face_reg.get_person_names()
 
     def onConnect(self, request):
@@ -129,9 +120,9 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 
         imgdata = StringIO.StringIO()
         pi = Image.fromarray(outFrame)
-        pi.save(imgdata, format = "png")
+        pi.save(imgdata, format = "jpeg")
         imgdata.seek(0)
-        content = 'data:image/png;base64,' + \
+        content = 'data:image/jpeg;base64,' + \
             urllib.quote(base64.b64encode(imgdata.buf))
         msg = {
             "type": "ANNOTATED",
