@@ -29,19 +29,15 @@ def remove_dir(dir):
         if(os.path.exists(dir)):
             os.remove(dir)
 
-remove_dir('images')
-
 class TrainModels(Resource):
     modles = {}
     def __add_modle(self, name):
         if name not in self.modles:
             self.modles[name] = {'state':'INIT', 'features':None, 'count':0}
-            os.makedirs('images/' + name)
 
     def __del_modle(self, name):
         if name in self.modles:
             del self.modles[name]
-            remove_dir('images/' + name)
 
     def __get_modle_features(self, name):
         if name not in self.modles:
@@ -51,14 +47,6 @@ class TrainModels(Resource):
         else:
             ret = {'state':'FINISH', 'feature':self.modles[name]['features']}
         return ret
-
-    def __get_next_filename(self, name):
-        if name in self.modles:
-            self.modles[name]['count'] += 1
-            f = 'images/{}/{}.png'.format(name, self.modles[name]['count'])
-            return f
-        else:
-            return None
 
     def __train_modle(self, name, images):
         if name not in self.modles or len(images) == 0:

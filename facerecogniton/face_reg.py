@@ -58,7 +58,7 @@ def recog_process_frame(frame):
     recog_data = findPeople(features_arr,positions);
     for (i,rect) in enumerate(rects):
         cv2.rectangle(frame,(rect[0],rect[1]),(rect[0] + rect[2],rect[1]+rect[3]),(255,0,0)) #draw bounding box for the face
-        cv2.putText(frame, recog_data,(rect[0],rect[1]),cv2.FONT_HERSHEY_SIMPLEX,1,(255,255,255),1)
+        cv2.putText(frame, recog_data[i],(rect[0],rect[1]),cv2.FONT_HERSHEY_SIMPLEX,1,(255,255,255),1)
     return frame
 
 '''
@@ -80,7 +80,7 @@ def findPeople(features_arr, positions, thres = 0.6, percent_thres = 80):
     :param thres: distance threshold
     :return: person name and percentage
     '''
-    returnRes = "";
+    regRes = [];
     for (i,features_128D) in enumerate(features_arr):
         returnRes = "Unknown";
         smallest = sys.maxsize
@@ -93,10 +93,10 @@ def findPeople(features_arr, positions, thres = 0.6, percent_thres = 80):
                     returnRes = person;
         percentage =  min(100, 100 * thres / smallest)
         if percentage <= percent_thres :
-            returnRes = "Unknown"
+            regRes.append("Unknown")
         else:
-            returnRes = returnRes+"-"+str(round(percentage,1))+"%"
-    return returnRes
+            regRes.append(returnRes+"-"+str(round(percentage,1))+"%")
+    return regRes
 
 '''
 Description:
@@ -146,8 +146,8 @@ def training_finish_local(model, callback):
 
 def __save_person_features(name, features):
     feature_data_set[name] = features;
-#    f = open('./models/facerec_128D.txt', 'w');
-#    f.write(json.dumps(feature_data_set))
+    f = open('./models/facerec_128D.txt', 'w');
+    f.write(json.dumps(feature_data_set))
 
 def get_person_names():
     names = []

@@ -51,25 +51,25 @@ img {
 }
 
 .container .content1 {
-    top: 600px;
+    top: 630px;
     bottom: 0;
     position: absolute;
     right: 0;
     left: 0;
     margin: auto;
-    width: 80%;
+    width: 60%;
     height: auto;
     /* overflow-y: scroll; */
 }
 
 .container .content2 {
-    top: 600px;
+    top: 630px;
     bottom: 0;
     position: absolute;
     right: 0;
     left: 50%;
     margin: auto;
-    width: 80%;
+    width: 60%;
     height: auto;
     /* overflow-y: scroll; */
 }

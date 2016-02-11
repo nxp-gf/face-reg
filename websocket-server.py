@@ -77,13 +77,17 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
             if msg['type'] == "IDENTITY_REQ":
                 self.loadIdentity()
             elif msg['type'] == "TRAINING_START":
+                print "TRAINING_START"
                 name = msg['val'].encode('ascii', 'ignore')
                 self.training = True
                 self.new_person = face_reg.training_start(name)
+                print self.new_person
             elif msg['type'] == "TRAINING_FINISH":
-                self.training = False
-                face_reg.training_finish(self.new_person, self.onTrainFinish)
-                self.new_person = None
+                print "TRAINING_END"
+                if self.training == True:
+                    self.training = False
+                    face_reg.training_finish(self.new_person, self.onTrainFinish)
+                    self.new_person = None
             elif msg['type'] == "FRAME":
                 self.processFrame(msg['dataURL'], msg['identity'])
                 self.sendMessage('{"type": "PROCESSED"}')

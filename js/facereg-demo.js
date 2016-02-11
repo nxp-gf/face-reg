@@ -63,7 +63,7 @@ function sendFrameLoop() {
         canvas.width = vid.width;
         canvas.height = vid.height;
         var cc = canvas.getContext('2d');
-      　cc.translate(canvas.width, 0);
+        cc.translate(canvas.width, 0);
         cc.scale(-1, 1);
         cc.drawImage(vid, 0, 0, vid.width, vid.height);
         var apx = cc.getImageData(0, 0, vid.width, vid.height);
@@ -201,15 +201,14 @@ function umSuccess(stream) {
 function trainingChkCallback() {
     console.log("in trainingChkCallback");
     training = $("#trainingChk").prop('checked');
+    
+
     if (training) {
         var newPerson = $("#addPersonTxt").val();
 
-//        if (newPerson == "") {
-//            alert("Please input a Name");
-//            $("#trainingChk").removeAttr('checked');
- //           return;
-//        }
-        
+        if(document.getElementById("addPersonTxt").value=='')
+        { alert("Please input your name!"); return; }
+
         if (socket != null) {
             var msg = {
                 'type': 'TRAINING_START',
