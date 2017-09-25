@@ -35,7 +35,7 @@ import imagehash
 import json
 from PIL import Image
 import numpy as np
-import os
+import os,datetime
 import StringIO
 import urllib
 import base64
@@ -128,35 +128,40 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
         head = "data:image/jpeg;base64,"
         assert(dataURL.startswith(head))
         imgdata = base64.b64decode(dataURL[len(head):])
-        imgF = StringIO.StringIO()
-        imgF.write(imgdata)
-        imgF.seek(0)
-        img = Image.open(imgF)
+        #imgF = StringIO.StringIO()
+        #imgF.write(imgdata)
 
-        buf = np.fliplr(np.asarray(img))
-        inFrame = np.copy(buf)
+
+        #imgF.seek(0)
+        #img = Image.open(imgF)
+
+        #buf = np.fliplr(np.asarray(img))
+        #inFrame = np.copy(buf)
+
+        pilImage = Image.open(StringIO.StringIO(imgdata))
+        inFrame = np.array(pilImage)
+        #inFrame = cv2.cv.fromarray(npImage)
 
         if self.training:
             outFrame = face_reg.training_process_frame(inFrame)
         else:
-				outFrame = face_reg.recog_process_frame(inFrame)
+            outFrame = face_reg.recog_process_frame(inFrame)
 
-        plt.figure()
-        plt.imshow(outFrame)
-        plt.xticks([])
-        plt.yticks([])
 
+        print(datetime.datetime.now())
         imgdata = StringIO.StringIO()
-        plt.savefig(imgdata, format='png')
+        pi = Image.fromarray(outFrame)
+        pi.save(imgdata, format = "png")
         imgdata.seek(0)
+        print(datetime.datetime.now())
         content = 'data:image/png;base64,' + \
             urllib.quote(base64.b64encode(imgdata.buf))
         msg = {
             "type": "ANNOTATED",
             "content": content
         }
-        plt.close()
         self.sendMessage(json.dumps(msg))
+        print(datetime.datetime.now())
 
 
 '''
@@ -308,6 +313,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
                 "content": content
             }
             plt.close()
+            print(datetime.datetime.now())
             self.sendMessage(json.dumps(msg))
 '''
 

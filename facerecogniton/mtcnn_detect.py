@@ -20,7 +20,7 @@ class MTCNNDetect(object):
         self.threshold = threshold
         self.factor = factor
         self.scale_factor = scale_factor;
-        with face_rec_graph.graph.as_default():
+        with face_rec_graph.graph.as_default(), tf.device('/cpu:0'):
             print("Loading MTCNN Face detection model")
             self.sess = tf.Session()
             if not model_path:

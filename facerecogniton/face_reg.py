@@ -16,7 +16,7 @@ from face_feature import FaceFeature
 from mtcnn_detect import MTCNNDetect
 from tf_graph import FaceRecGraph
 import argparse
-import sys
+import sys,time,datetime
 import json
 import numpy as np
 
@@ -48,6 +48,7 @@ def recog_process_frame(frame):
     rects, landmarks = face_detect.detect_face(frame,80);#min face size is set to 80x80
     aligns = []
     positions = []
+    print(datetime.datetime.now())
     for (i, rect) in enumerate(rects):
         aligned_face, face_pos = aligner.align(160,frame,landmarks[i])
         aligns.append(aligned_face)
@@ -56,7 +57,8 @@ def recog_process_frame(frame):
     recog_data = findPeople(features_arr,positions);
     for (i,rect) in enumerate(rects):
         cv2.rectangle(frame,(rect[0],rect[1]),(rect[0] + rect[2],rect[1]+rect[3]),(255,0,0)) #draw bounding box for the face
-        cv2.putText(frame,recog_data[i][0]+" - "+str(recog_data[i][1])+"%",(rect[0],rect[1]),cv2.FONT_HERSHEY_SIMPLEX,1,(255,255,255),1,cv2.LINE_AA)
+        cv2.putText(frame,recog_data[i][0]+" - "+str(recog_data[i][1])+"%",(rect[0],rect[1]),cv2.FONT_HERSHEY_SIMPLEX,1,(255,255,255),1,cv2.CV_AA)
+    print(datetime.datetime.now())
     return frame
 
 '''

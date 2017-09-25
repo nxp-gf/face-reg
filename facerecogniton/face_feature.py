@@ -15,7 +15,7 @@ class FaceFeature(object):
         :param model_path:
         '''
         print("Loading model...")
-        with face_rec_graph.graph.as_default():
+        with face_rec_graph.graph.as_default(), tf.device('/cpu:0'):
             self.sess = tf.Session()
             self.x = tf.placeholder('float', [None,160,160,3]); #default input for the NN is 160x160x3
             self.embeddings = tf.nn.l2_normalize(

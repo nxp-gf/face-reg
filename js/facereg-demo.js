@@ -57,6 +57,7 @@ function sendFrameLoop() {
         return;
     }
 
+    console.log("Start sendFrameLoop");
     if (tok > 0) {
         var canvas = document.createElement('canvas');
         canvas.width = vid.width;
@@ -75,7 +76,8 @@ function sendFrameLoop() {
         socket.send(JSON.stringify(msg));
         tok--;
     }
-    setTimeout(function() {requestAnimFrame(sendFrameLoop)}, 50);
+    console.log("End sendFrameLoop");
+ //   setTimeout(function() {requestAnimFrame(sendFrameLoop)}, 10);
 }
 
 
@@ -139,7 +141,7 @@ function createSocket(address, name) {
         sentTimes.push(new Date());
     }
     socket.onmessage = function(e) {
-        console.log(e);
+//        console.log(e);
         j = JSON.parse(e.data)
         if (j.type == "NULL") {
             receivedTimes.push(new Date());
@@ -154,7 +156,7 @@ function createSocket(address, name) {
             }
         } else if (j.type == "PROCESSED") {
             tok++;
-//            requestAnimFrame(sendFrameLoop)
+            sendFrameLoop();
         } else if (j.type == "IDENTITY_RESP") {
             people = j['content'];
             redrawPeople();
