@@ -114,6 +114,7 @@ class PersonModel:
         self.name = name
         self.person_imgs = {"Left" : [], "Right": [], "Center": []};
         self.feature = None
+        self.images = []
 
 def training_start_local(name):
     return PersonModel(name)
@@ -159,16 +160,25 @@ import threading
 
 url = 'http://10.193.20.74:8383/train'
 
-def __training_thread_remote(name, callback):
-    args = {'id': name}
+def __training_thread_remote(model, callback):
+    args = {'id': model.name, 'end':'true'}
+    headers = {"Content-type":"application/json","Accept": "application/json"}
+    files = {}
+    for i,f in enumerate(model.images):
+        files['file{}'.format(i)] = ('{}.png'.format(i), f, 'image/png')
+#    files = {'file': ('pic.png', picf, 'image/png')}
+    r = requests.post(url, params=args, files=files)
+#    r = requests.post(url, params=args)
+
+    args = {'id': model.name}
     headers = {"Content-type":"application/json","Accept": "application/json"}
     while (True):
         time.sleep(1)
         r = requests.get(url, params=args, headers=headers)
         ret = json.loads(r.text)
         if ('state'in ret and ret['state'] == 'FINISH'):
-            __save_person_features(name, ret['feature'])
-            callback(name, r.text)
+            __save_person_features(model.name, ret['feature'])
+            callback(model.name, r.text)
             headers = {"Content-type":"application/json","Accept": "application/json"}
             r = requests.delete(url, params=args, headers=headers)
             break
@@ -180,15 +190,13 @@ def training_start_remote(name):
     return PersonModel(name)
 
 def training_proframe_remote(model, picf):
-    args = {'id': model.name, 'end':'false'}
-    files = {'file': ('pic.png', picf, 'image/png')}
-    r = requests.post(url, params=args, files=files)
+    model.images.append(picf)
+#    args = {'id': model.name, 'end':'false'}
+#    files = {'file': ('pic.png', picf, 'image/png')}
+#    r = requests.post(url, params=args, files=files)
 
 def training_finish_remote(model, callback):
-    args = {'id': model.name, 'end':'true'}
-    headers = {"Content-type":"application/json","Accept": "application/json"}
-    r = requests.post(url, params=args)
-    t = threading.Thread(target=__training_thread_remote, args=(model.name, callback,))
+    t = threading.Thread(target=__training_thread_remote, args=(model, callback,))
     t.start()
     return t
 

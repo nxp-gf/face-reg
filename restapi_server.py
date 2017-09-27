@@ -5,6 +5,8 @@ from flask import Flask
 from flask_restful import reqparse, abort, Api, Resource, request
 import werkzeug
 import os
+import StringIO
+
 
 import facerecogniton.face_reg as face_reg
 
@@ -58,14 +60,12 @@ class TrainModels(Resource):
         else:
             return None
 
-    def __train_modle(self, name):
-        if name not in self.modles:
+    def __train_modle(self, name, images):
+        if name not in self.modles or len(images) == 0:
             return
-        print face_reg.training_start
         pmodel = face_reg.training_start(name)
-        for f in os.listdir('images/' + name):
-            with open(os.path.join('images/' + name, f), 'rb') as picf:
-                face_reg.training_proframe(pmodel, picf)
+        for picf in images:
+            face_reg.training_proframe(pmodel, picf)
         face_reg.training_finish(pmodel, self.__train_finish)
 
     def __train_finish(self, name, features):
@@ -90,11 +90,12 @@ class TrainModels(Resource):
 
     def post(self):
         args = parser.parse_args()
-        if (args['file'] is not None):
-            name = self.__get_next_filename(args['id'])
-            args['file'].save(name)
-        if (args['end'] == 'true'):
-            self.__train_modle(args['id'])
+        images = []
+        for fname, f in request.files.items():
+            pif=StringIO.StringIO()
+            f.save(pif)
+            images.append(pif)
+        self.__train_modle(args['id'], images)
         return 'SUCCESS', 201
 
 ##
