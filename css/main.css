@@ -46,12 +46,12 @@ img {
     margin-right: auto;
     margin-bottom: 10px;
     width: 80%;
-    height: 310px;
+    height: 600px;
     /* overflow-y: scroll; */
 }
 
 .container .content {
-    top: 350px;
+    top: auto;
     bottom: 0;
     position: absolute;
     right: 0;
@@ -59,7 +59,7 @@ img {
     margin: auto;
     width: 80%;
     height: auto;
-    overflow-y: scroll;
+    /* overflow-y: scroll; */
 }
 
 a.remove {
@@ -93,3 +93,4 @@ ul.tabs li.current{
 .tab-content.current{
     display: inherit;
 }
+

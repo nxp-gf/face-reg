@@ -63,6 +63,8 @@ function sendFrameLoop() {
         canvas.width = vid.width;
         canvas.height = vid.height;
         var cc = canvas.getContext('2d');
+      　cc.translate(canvas.width, 0);
+        cc.scale(-1, 1);
         cc.drawImage(vid, 0, 0, vid.width, vid.height);
         var apx = cc.getImageData(0, 0, vid.width, vid.height);
 
@@ -162,7 +164,7 @@ function createSocket(address, name) {
             redrawPeople();
         } else if (j.type == "ANNOTATED") {
             $("#detectedFaces").html(
-                "<img src='" + j['content'] + "' width='430px'></img>"
+                "<img src='" + j['content'] + "' width='800px'></img>"
             )
         } else if (j.type == "TSNE_DATA") {
             BootstrapDialog.show({

@@ -58,7 +58,7 @@ def recog_process_frame(frame):
     recog_data = findPeople(features_arr,positions);
     for (i,rect) in enumerate(rects):
         cv2.rectangle(frame,(rect[0],rect[1]),(rect[0] + rect[2],rect[1]+rect[3]),(255,0,0)) #draw bounding box for the face
-        cv2.putText(frame,recog_data[i][0]+" - "+str(recog_data[i][1])+"%",(rect[0],rect[1]),cv2.FONT_HERSHEY_SIMPLEX,1,(255,255,255),1)
+        cv2.putText(frame,recog_data[i][0]+"-"+str(recog_data[i][1])+"%",(rect[0],rect[1]),cv2.FONT_HERSHEY_SIMPLEX,1,(255,255,255),1)
         #cv2.putText(frame,recog_data[i][0]+" - "+str(recog_data[i][1])+"%",(rect[0],rect[1]),cv2.FONT_HERSHEY_SIMPLEX,1,(255,255,255),1,cv2.CV_AA)
     return frame
 
@@ -95,7 +95,7 @@ def findPeople(features_arr, positions, thres = 0.6, percent_thres = 70):
         percentage =  min(100, 100 * thres / smallest)
         if percentage <= percent_thres :
             result = "Unknown"
-        returnRes.append((result,percentage))
+        returnRes.append((result,round(percentage,1)))
     return returnRes
 
 '''

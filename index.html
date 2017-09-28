@@ -28,7 +28,7 @@ limitations under the License.
     </head>
     <body>
         <div class="container">
-            <div class="header">
+             <div class="header">
                 <ul class='tabs'>
                     <li class='tab-link' data-tab='tab-preview'
                         id='tab-preview-button'>
@@ -40,7 +40,7 @@ limitations under the License.
                     </li>
                 </ul>
                 <div id='tab-preview' class='tab-content'>
-                    <video id="videoel" width="400" height="300"
+                    <video id="videoel" width="800" height="600"
                            preload="auto" loop></video>
                 </div>
                 <div id='tab-annotated' class='tab-content current'>
@@ -48,28 +48,19 @@ limitations under the License.
                 </div>
             </div>
             <div class="content">
-                <h2>People in Video</h2>
-                <div id="peopleInVideo"></div>
-
-                <h2>Servers: <span id="serverStatus"></span></h2>
-
-                <h3>Training
+                <h3>Server: <span id="serverStatus"></span></h3>
+                <h4>Training
                     <input type="checkbox" checked data-toggle="toggle"
                            id="trainingChk">
-                </h3>
-                <h3>Please input your name
-                    <input type="text" class="form-control" id="addPersonTxt"
-                           maxlength="15">
-                </h3>
-                <br/>
-                <br/>
-                <h3>Names
-                    <input type="text" value="" readonly id="identity">
-                </h3>
-                <br/>
-
-
-            </div>
+                    Name
+                    <input type="text" id="addPersonTxt"
+                           maxlength="5">
+                </h4>
+                <h4>All Names:
+                    <input type="text" value="" readonly id="identity"
+                           maxlength="300">
+                </h4>
+             </div>
         </div>
     </body>
     <script src="vendor/js/jquery.min.js"></script>
@@ -106,7 +97,6 @@ limitations under the License.
      var socket, socketName;
 
      $("#trainingChk").bootstrapToggle('off');
-     $("#peopleInVideo").html("");
 
      if (navigator.getUserMedia) {
          var videoSelector = {video : true};

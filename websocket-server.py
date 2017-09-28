@@ -68,7 +68,9 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
         super(OpenFaceServerProtocol, self).__init__()
         self.training = False
         self.new_person = None
-        face_reg.recog_engine_init(serverip='10.193.20.74')
+        #face_reg.recog_engine_init(serverip='10.193.20.74')
+        #face_reg.recog_engine_init(serverip='ec2-54-202-53-170.us-west-2.compute.amazonaws.com')
+        face_reg.recog_engine_init(serverip='47.95.202.40')
         self.peoples = face_reg.get_person_names()
 
     def onConnect(self, request):
@@ -97,7 +99,6 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
             elif msg['type'] == "NULL":
                 self.sendMessage('{"type": "NULL"}')
         except Exception,e:
-            raise(e)
             self.sendMessage('{"type": "PROCESSED"}')
 
     def onTrainFinish(self, name, feature):
