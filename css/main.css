@@ -50,8 +50,8 @@ img {
     /* overflow-y: scroll; */
 }
 
-.container .content {
-    top: auto;
+.container .content1 {
+    top: 600px;
     bottom: 0;
     position: absolute;
     right: 0;
@@ -61,6 +61,19 @@ img {
     height: auto;
     /* overflow-y: scroll; */
 }
+
+.container .content2 {
+    top: 600px;
+    bottom: 0;
+    position: absolute;
+    right: 0;
+    left: 50%;
+    margin: auto;
+    width: 80%;
+    height: auto;
+    /* overflow-y: scroll; */
+}
+
 
 a.remove {
     color: red;

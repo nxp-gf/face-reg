@@ -47,19 +47,20 @@ limitations under the License.
                     <div id="detectedFaces"></div>
                 </div>
             </div>
-            <div class="content">
-                <h3>Server: <span id="serverStatus"></span></h3>
-                <h4>Training
+            <div class="content1">
+                <h4>Server: <span id="serverStatus"></span></h4>
+                <h4>Training(Input Your Name First):
                     <input type="checkbox" checked data-toggle="toggle"
                            id="trainingChk">
-                    Name
-                    <input type="text" id="addPersonTxt"
-                           maxlength="5">
                 </h4>
-                <h4>All Names:
-                    <input type="text" value="" readonly id="identity"
-                           maxlength="300">
+                <h4>Name:
+                    <input type="text" id="addPersonTxt" style="width:25%">
                 </h4>
+            </div>
+            <div class="content2">
+                <h4>All Names:</h4>
+                <textarea style="resize:none" readonly id="identity"
+                          cols ="50" rows = "3"> </textarea>
              </div>
         </div>
     </body>
