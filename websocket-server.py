@@ -58,7 +58,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
         super(OpenFaceServerProtocol, self).__init__()
         self.training = False
         self.new_person = None
-        face_reg.recog_engine_init(serverip='10.193.20.74')
+        face_reg.recog_engine_init(serverip='120.27.21.223')
         #face_reg.recog_engine_init(serverip='ec2-54-202-53-170.us-west-2.compute.amazonaws.com')
         #face_reg.recog_engine_init()
         #face_reg.recog_engine_init(serverip='47.95.202.40')
