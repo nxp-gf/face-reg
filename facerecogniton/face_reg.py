@@ -50,6 +50,7 @@ def recog_process_frame(frame):
     rects, landmarks = face_detect.detect_face(frame,80);#min face size is set to 80x80
     aligns = []
     positions = []
+    rets = {}
     for (i, rect) in enumerate(rects):
         aligned_face, face_pos = aligner.align(160,frame,landmarks[i])
         aligns.append(aligned_face)
@@ -57,9 +58,10 @@ def recog_process_frame(frame):
     features_arr = extract_feature.get_features(aligns)
     recog_data = findPeople(features_arr,positions);
     for (i,rect) in enumerate(rects):
-        cv2.rectangle(frame,(rect[0],rect[1]),(rect[0] + rect[2],rect[1]+rect[3]),(255,0,0)) #draw bounding box for the face
-        cv2.putText(frame, recog_data[i],(rect[0],rect[1]),cv2.FONT_HERSHEY_SIMPLEX,1,(255,255,255),1)
-    return frame
+         rets[recog_data[i]] = rect
+#        cv2.rectangle(frame,(rect[0],rect[1]),(rect[0] + rect[2],rect[1]+rect[3]),(255,0,0)) #draw bounding box for the face
+#        cv2.putText(frame, recog_data[i],(rect[0],rect[1]),cv2.FONT_HERSHEY_SIMPLEX,1,(255,255,255),1)
+    return rets
 
 '''
 facerec_128D.txt Data Structure:
@@ -73,7 +75,7 @@ facerec_128D.txt Data Structure:
 This function basically does a simple linear search for 
 ^the 128D vector with the min distance to the 128D vector of the face on screen
 '''
-def findPeople(features_arr, positions, thres = 0.6, percent_thres = 90):
+def findPeople(features_arr, positions, thres = 0.5, percent_thres = 90):
     '''
     :param features_arr: a list of 128d Features of all faces on screen
     :param positions: a list of face position types of all faces on screen

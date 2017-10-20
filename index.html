@@ -44,7 +44,7 @@ limitations under the License.
                            preload="auto" loop></video>
                 </div>
                 <div id='tab-annotated' class='tab-content current'>
-                    <div id="detectedFaces"></div>
+                    <canvas id="ctx1" width="800" height="600"/>
                 </div>
             </div>
             <div class="content1">
@@ -94,8 +94,11 @@ limitations under the License.
          people = '', defaultPerson = -1,
          images = [],
          training = false;
+     var ctx =  document.getElementById('ctx1');
+     var cc = ctx.getContext('2d');
      var numNulls, sentTimes, receivedTimes;
      var socket, socketName;
+     var regRet;
 
      $("#trainingChk").bootstrapToggle('off');
 

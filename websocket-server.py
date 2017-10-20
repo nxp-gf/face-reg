@@ -117,20 +117,20 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 
         if self.training:
             face_reg.training_proframe(self.new_person, StringIO.StringIO(imgdata))
-            outFrame = inFrame
+#            outFrame = inFrame
         else:
-            outFrame = face_reg.recog_process_frame(inFrame)
+#            outFrame = face_reg.recog_process_frame(inFrame)
+            rets = face_reg.recog_process_frame(inFrame)
 
-
-        imgdata = StringIO.StringIO()
-        pi = Image.fromarray(outFrame)
-        pi.save(imgdata, format = "jpeg")
-        imgdata.seek(0)
-        content = 'data:image/jpeg;base64,' + \
-            urllib.quote(base64.b64encode(imgdata.buf))
+#        imgdata = StringIO.StringIO()
+#        pi = Image.fromarray(outFrame)
+#        pi.save(imgdata, format = "jpeg")
+#        imgdata.seek(0)
+#        content = 'data:image/jpeg;base64,' + \
+#            urllib.quote(base64.b64encode(imgdata.buf))
         msg = {
             "type": "ANNOTATED",
-            "content": content
+            "content": rets
         }
         self.sendMessage(json.dumps(msg))
 

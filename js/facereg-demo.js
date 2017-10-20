@@ -51,21 +51,38 @@ function registerHbarsHelpers() {
     });
 }
 
-function sendFrameLoop() {
-    if (socket == null || socket.readyState != socket.OPEN ||
-        !vidReady || numNulls != defaultNumNulls) {
-        return;
-    }
+function drawPeopleName(cc,rect,name)
+{
 
-    console.log("Start sendFrameLoop");
-    if (tok > 0) {
+    cc.lineWidth=2;
+    cc.strokeStyle="red";
+    cc.beginPath();
+    cc.rect(rect[0], rect[1], rect[2], rect[3]);
+    cc.closePath();
+    cc.font="25px Arial";
+    cc.fillText(name, rect[0], rect[1]);
+    cc.stroke();
+}
+
+function processFrameLoop() {
+
+//    console.log("Start sendFrameLoop");
+//    if (tok > 0) {
+/*
         var canvas = document.createElement('canvas');
         canvas.width = vid.width;
         canvas.height = vid.height;
         var cc = canvas.getContext('2d');
         cc.translate(canvas.width, 0);
         cc.scale(-1, 1);
+*/
         cc.drawImage(vid, 0, 0, vid.width, vid.height);
+        var tmp = regRet;
+        for (var key in tmp) {
+            drawPeopleName(cc, tmp[key], key);
+        }
+　　    //context.fillStyle = "#000000";
+/*
         var apx = cc.getImageData(0, 0, vid.width, vid.height);
 
         var dataURL = canvas.toDataURL('image/jpeg', 0.6)
@@ -76,12 +93,28 @@ function sendFrameLoop() {
             'identity': defaultPerson
         };
         socket.send(JSON.stringify(msg));
-        tok--;
-    }
-    console.log("End sendFrameLoop");
- //   setTimeout(function() {requestAnimFrame(sendFrameLoop)}, 10);
+*/
+//        tok--;
+//    }
+//    console.log("End sendFrameLoop");
+    setTimeout(function() {requestAnimFrame(processFrameLoop)}, 0);
 }
+function sendFrame() {
+    if (socket == null || socket.readyState != socket.OPEN ||
+        !vidReady || numNulls != defaultNumNulls) {
+        return;
+    }
+    var apx = cc.getImageData(0, 0, vid.width, vid.height);
 
+    var dataURL = ctx.toDataURL('image/jpeg', 0.6)
+
+    var msg = {
+        'type': 'FRAME',
+        'dataURL': dataURL,
+        'identity': defaultPerson
+    };
+    socket.send(JSON.stringify(msg));
+}
 
 function redrawPeople() {
    document.getElementById("identity").value=people;
@@ -151,21 +184,24 @@ function createSocket(address, name) {
             if (numNulls == defaultNumNulls) {
                 updateRTT();
                 sendIndentityReq();
-                sendFrameLoop();
+                sendFrame();
             } else {
                 socket.send(JSON.stringify({'type': 'NULL'}));
                 sentTimes.push(new Date());
             }
         } else if (j.type == "PROCESSED") {
             tok++;
-            sendFrameLoop();
+            sendFrame();
         } else if (j.type == "IDENTITY_RESP") {
             people = j['content'];
             redrawPeople();
         } else if (j.type == "ANNOTATED") {
+/*
             $("#detectedFaces").html(
                 "<img src='" + j['content'] + "' width='800px'></img>"
             )
+*/
+            regRet = j['content'];
         } else if (j.type == "TSNE_DATA") {
             BootstrapDialog.show({
                 message: "<img src='" + j['content'] + "' width='100%'></img>"
@@ -195,7 +231,8 @@ function umSuccess(stream) {
     }
     vid.play();
     vidReady = true;
-    sendFrameLoop();
+    processFrameLoop();
+    sendFrame();
 }
 
 function trainingChkCallback() {
