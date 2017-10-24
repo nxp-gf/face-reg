@@ -78,7 +78,8 @@ function processFrameLoop() {
         cc.drawImage(vid, 0, 0, vid.width, vid.height);
         var tmp = regRet;
         for (var key in tmp) {
-            drawPeopleName(cc, tmp[key]["pos"], tmp[key]["name"]);
+            drawPeopleName(cc, tmp[key], " ");
+            //drawPeopleName(cc, tmp[key]["pos"], tmp[key]["name"]);
         }
         //context.fillStyle = "#000000";
 /*

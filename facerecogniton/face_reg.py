@@ -52,10 +52,12 @@ def recog_process_frame(frame):
     aligns = []
     positions = []
     rets = []
-    for (i,rect) in enumerate(rects):
-         rets.append({"name":" ", "pos":rect})
-    return rets
-    
+    #for (i,rect) in enumerate(rects):
+    #     rets.append({"name":" ", "pos":rect})
+    return rects
+
+def recog_thread(frame, rets)
+    rets = []
     #print "222  ", int(round(time.time() * 1000))
     for (i, rect) in enumerate(rects):
         aligned_face, face_pos = aligner.align(160,frame,landmarks[i])
