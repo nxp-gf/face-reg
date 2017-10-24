@@ -52,9 +52,9 @@ def recog_process_frame(frame):
     aligns = []
     positions = []
     rets = []
-    #for (i,rect) in enumerate(rects):
-    #     rets.append({"name":" ", "pos":rect})
-    #return rets
+    for (i,rect) in enumerate(rects):
+         rets.append({"name":" ", "pos":rect})
+    return rets
     
     #print "222  ", int(round(time.time() * 1000))
     for (i, rect) in enumerate(rects):

@@ -119,7 +119,7 @@ function sendFrame() {
     };
     socket.send(JSON.stringify(msg));
     console.log("End sendFrame");
-//    setTimeout("sendFrame()", 50);
+    setTimeout("sendFrame()", 30);
 }
 
 function redrawPeople() {
@@ -197,7 +197,7 @@ function createSocket(address, name) {
             }
         } else if (j.type == "PROCESSED") {
             tok++;
-            sendFrame();
+            //sendFrame();
         } else if (j.type == "IDENTITY_RESP") {
             people = j['content'];
             redrawPeople();
