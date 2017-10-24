@@ -35,10 +35,11 @@ import cv2
 import json
 from PIL import Image
 import numpy as np
-import os
+import os,time
 import StringIO
 import urllib
 import base64
+import threading, Queue
 
 import facerecogniton.face_reg as face_reg
 
@@ -63,6 +64,10 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
         #face_reg.recog_engine_init()
         #face_reg.recog_engine_init(serverip='47.95.202.40')
         self.peoples = face_reg.get_person_names()
+        self.img_queue = Queue.Queue(maxsize = 3)
+        self.res_queue = Queue.Queue(maxsize = 3)
+        #self.t = threading.Thread(target=self.recogThread, args=())
+        #self.t.start()
 
     def onConnect(self, request):
         print("Client connecting: {0}".format(request.peer))
@@ -89,12 +94,13 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
                     face_reg.training_finish(self.new_person, self.onTrainFinish)
                     self.new_person = None
             elif msg['type'] == "FRAME":
-                self.processFrame(msg['dataURL'], msg['identity'])
                 self.sendMessage('{"type": "PROCESSED"}')
+                self.processFrame(msg['dataURL'], msg['identity'])
             elif msg['type'] == "NULL":
                 self.sendMessage('{"type": "NULL"}')
         except Exception,e:
             self.sendMessage('{"type": "PROCESSED"}')
+            print e
 
     def onTrainFinish(self, name, feature):
         self.loadIdentity()
@@ -108,6 +114,20 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
         self.sendMessage(json.dumps(msg))
 
     def processFrame(self, dataURL, identity):
+        #if (self.img_queue.full()):
+        #    self.img_queue.get()
+        #self.img_queue.put(dataURL)
+        #if (self.res_queue.empty() != True):
+        #    rets = self.res_queue.get()
+        #    
+        #    msg = {
+        #        "type": "ANNOTATED",
+        #        "content": rets
+        #    }
+        #    self.sendMessage(json.dumps(msg))
+        #return
+
+
         head = "data:image/jpeg;base64,"
         assert(dataURL.startswith(head))
         imgdata = base64.b64decode(dataURL[len(head):])
@@ -133,6 +153,29 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
             "content": rets
         }
         self.sendMessage(json.dumps(msg))
+
+    def recogThread(self):
+        while (1):
+            dataURL = self.img_queue.get()
+            head = "data:image/jpeg;base64,"
+            assert(dataURL.startswith(head))
+            imgdata = base64.b64decode(dataURL[len(head):])
+
+            pilImage = Image.open(StringIO.StringIO(imgdata))
+            inFrame = np.array(pilImage)
+
+            if self.training:
+                face_reg.training_proframe(self.new_person, StringIO.StringIO(imgdata))
+            else:
+                rets = face_reg.recog_process_frame(inFrame)
+
+           # msg = {
+           #     "type": "ANNOTATED",
+           #     "content": rets
+           # }
+           # self.sendMessage(json.dumps(msg))
+            self.res_queue.put(rets)
+
 
 
 def main(reactor):
