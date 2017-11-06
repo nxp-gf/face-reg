@@ -46,30 +46,30 @@ Images from Video Capture -> detect faces' regions -> crop those faces and align
     
 '''
 def recog_process_frame(frame):
+    #print "111  ", int(round(time.time() * 1000))
     #u can certainly add a roi here but for the sake of a demo i'll just leave it as simple as this
     rects, landmarks = face_detect.detect_face(frame,80);#min face size is set to 80x80
     aligns = []
     positions = []
-<<<<<<< HEAD
     rets = []
     #for (i,rect) in enumerate(rects):
     #     rets.append({"name":" ", "pos":rect})
-    return rects
-
-def recog_thread(frame, rets)
-    rets = []
+    #return rets
+    
     #print "222  ", int(round(time.time() * 1000))
-=======
-    rets = {}
->>>>>>> parent of 9f73294... fix bugs
     for (i, rect) in enumerate(rects):
         aligned_face, face_pos = aligner.align(160,frame,landmarks[i])
         aligns.append(aligned_face)
         positions.append(face_pos)
+    if (len(aligns) == 0):
+        return rets
+    #print "333  ", int(round(time.time() * 1000))
     features_arr = extract_feature.get_features(aligns)
+    #print "444  ", int(round(time.time() * 1000))
     recog_data = findPeople(features_arr,positions);
+    #print "555  ", int(round(time.time() * 1000))
     for (i,rect) in enumerate(rects):
-         rets[recog_data[i]] = rect
+         rets.append({"name":recog_data[i], "pos":rect})
 #        cv2.rectangle(frame,(rect[0],rect[1]),(rect[0] + rect[2],rect[1]+rect[3]),(255,0,0)) #draw bounding box for the face
 #        cv2.putText(frame, recog_data[i],(rect[0],rect[1]),cv2.FONT_HERSHEY_SIMPLEX,1,(255,255,255),1)
     return rets

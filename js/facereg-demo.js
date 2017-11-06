@@ -66,7 +66,6 @@ function drawPeopleName(cc,rect,name)
 
 function processFrameLoop() {
 
-//    console.log("Start sendFrameLoop");
 //    if (tok > 0) {
 /*
         var canvas = document.createElement('canvas');
@@ -79,14 +78,9 @@ function processFrameLoop() {
         cc.drawImage(vid, 0, 0, vid.width, vid.height);
         var tmp = regRet;
         for (var key in tmp) {
-<<<<<<< HEAD
-            drawPeopleName(cc, tmp[key], " ");
-            //drawPeopleName(cc, tmp[key]["pos"], tmp[key]["name"]);
-=======
-            drawPeopleName(cc, tmp[key], key);
->>>>>>> parent of 9f73294... fix bugs
+            drawPeopleName(cc, tmp[key]["pos"], tmp[key]["name"]);
         }
-　　    //context.fillStyle = "#000000";
+        //context.fillStyle = "#000000";
 /*
         var apx = cc.getImageData(0, 0, vid.width, vid.height);
 
@@ -101,12 +95,17 @@ function processFrameLoop() {
 */
 //        tok--;
 //    }
-//    console.log("End sendFrameLoop");
     setTimeout(function() {requestAnimFrame(processFrameLoop)}, 0);
 }
 function sendFrame() {
+    console.log("start sendFrame");
     if (socket == null || socket.readyState != socket.OPEN ||
         !vidReady || numNulls != defaultNumNulls) {
+        console.log("Error");
+        console.log(socket);
+        console.log(socket.readyState != socket.OPEN);
+        console.log( numNulls != defaultNumNulls);
+        console.log( !vidReady);
         return;
     }
     var apx = cc.getImageData(0, 0, vid.width, vid.height);
@@ -119,11 +118,8 @@ function sendFrame() {
         'identity': defaultPerson
     };
     socket.send(JSON.stringify(msg));
-<<<<<<< HEAD
     console.log("End sendFrame");
-    setTimeout("sendFrame()", 30);
-=======
->>>>>>> parent of 9f73294... fix bugs
+//    setTimeout("sendFrame()", 50);
 }
 
 function redrawPeople() {
@@ -158,7 +154,7 @@ function updateRTT() {
         diffs.push(receivedTimes[i] - sentTimes[i]);
     }
     $("#rtt-"+socketName).html(
-        jStat.mean(diffs).toFixed(2) + " ms (σ = " +
+        jStat.mean(diffs).toFixed(2) + " ms ( = " +
             jStat.stdev(diffs).toFixed(2) + ")"
     );
 }
@@ -201,7 +197,7 @@ function createSocket(address, name) {
             }
         } else if (j.type == "PROCESSED") {
             tok++;
-            //sendFrame();
+            sendFrame();
         } else if (j.type == "IDENTITY_RESP") {
             people = j['content'];
             redrawPeople();
@@ -212,6 +208,7 @@ function createSocket(address, name) {
             )
 */
             regRet = j['content'];
+//            console.log(regRet)
         } else if (j.type == "TSNE_DATA") {
             BootstrapDialog.show({
                 message: "<img src='" + j['content'] + "' width='100%'></img>"
